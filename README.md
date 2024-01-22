@@ -1,5 +1,6 @@
 <div align="center"><h1>PixEnc</h1></div>
 <div align="center">Encrypt image by manipulating pixels</div>
+<div align="center" style="color: grey"><sub>Version: Beta 2.0.0</sub></div>
 <div align="center">
   <strong>
     <a href="https://fardinkamal62.vercel.app/projects/pixenc">Website</a>
@@ -7,6 +8,12 @@
     <a href="https://docs.google.com/document/d/173xWvlrEQd1esI3rtD1SmtqtZ1rmFFwKzwRIdWKSTQw/edit?usp=sharing">Docs</a>
     </strong>
 </div>
+
+# Beta Note
+Multithreaded feature in development.
+
+# Known Issue
+Threads creation & sharing workload is working fine but image generation & encryption is not proper. It's giving partial output. And giving error on pixel read-write on big image.
 
 # Technologies
 - Python
