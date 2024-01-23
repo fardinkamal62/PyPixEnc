@@ -9,7 +9,7 @@ import os
 logging_format = "%(message)s"
 logging.basicConfig(format=logging_format, level=logging.INFO, datefmt="%H:%M:%S")
 NAME = "PixEnc"
-VERSION = "Beta 2.2.0"
+VERSION = "Beta 2.3.0"
 
 
 pixel_values = {}
@@ -35,7 +35,6 @@ def encrypt(image, random_numbers, pixel_start, pixel_end):
         j += 1
         x = i % width
         y = i // width
-        # pixel_value = read_pixel(image, x, y)
         pixel_value = pixels[x, y]
         red, green, blue, alpha = pixel_value
         if j < len(random_numbers) - 4:
@@ -44,7 +43,6 @@ def encrypt(image, random_numbers, pixel_start, pixel_end):
             blue = (blue ^ random_numbers[j + 2] * 2)
             alpha = (alpha ^ random_numbers[j + 3] * 2)
             pixel_values[i] = (red, green, blue, alpha)
-            # write_pixel(image, x, y, red, green, blue, alpha, True)
 
     end_time = datetime.datetime.now()
     logging.info(f"Encryption took {end_time - start_time} seconds for pixels {pixel_start} to {pixel_end}")
@@ -60,67 +58,41 @@ def decrypt(image, random_numbers, pixel_start, pixel_end):
     :return: None
     """
     width, height = image.size
+    with file_lock:
+        pixels = image.load()
 
-    logging.info("Decrypting image...")
+    logging.info("Decrypting image for pixels {pixel_start} to {pixel_end}...")
     start_time = datetime.datetime.now()
     j = 0
     for i in tqdm(range(pixel_start, pixel_end)):
         j += 1
         x = i % width
         y = i // width
-        pixel_value = image.getpixel((x, y))
+        pixel_value = pixels[x, y]
         red, green, blue, alpha = pixel_value
         if j < len(random_numbers) - 4:
             red = (red ^ random_numbers[j] * 2)
             green = (green ^ random_numbers[j + 1] * 2)
             blue = (blue ^ random_numbers[j + 2] * 2)
             alpha = (alpha ^ random_numbers[j + 3] * 2)
-            write_pixel(image, x, y, red, green, blue, alpha, False)
+            pixel_values[i] = (red, green, blue, alpha)
 
     end_time = datetime.datetime.now()
-    logging.info(f"Decryption took {end_time - start_time} seconds")
+    logging.info(f"Decryption took {end_time - start_time} seconds for pixels {pixel_start} to {pixel_end}")
 
 
 file_lock = threading.Lock()
 
 
-def write_pixel(image, x, y, red, green, blue, alpha, do_encrypt=True):
-    """
-    Write a pixel to an image
-    :param do_encrypt: Flag to identify if the image is to be encrypted or decrypted
-    :param image: PIL Image object
-    :param x: x-coordinate of the pixel
-    :param y: y-coordinate of the pixel
-    :param red: Red value of the pixel
-    :param green: Green value of the pixel
-    :param blue: Blue value of the pixel
-    :param alpha: Alpha value of the pixel
-    :return: None
-    """
-    new_pixels = (red, green, blue, alpha)
-    image.putpixel((x, y), new_pixels)
-    image.save(f"{'encrypt' if do_encrypt else 'decrypt'}.png")
-
-
-def read_pixel(image, x, y):
-    """
-    Read a pixel from an image
-    :param image: PIL Image object
-    :param x: x-coordinate of the pixel
-    :param y: y-coordinate of the pixel
-    :return: Tuple containing the pixel values
-    """
-    return image.getpixel((x, y))
-
-def write_pixels(image, pixels_chunk, width, do_encrypt=True):
+def write_pixels(image, pixels_chunk, do_encrypt=True):
     """
     Write a chunk of pixels to an image
     :param image: PIL Image object
     :param pixels_chunk: A chunk of pixels
-    :param width: The width of the image
     :param do_encrypt: Flag to identify if the image is to be encrypted or decrypted
     :return: None
     """
+    width, height = image.size
     for pixel in tqdm(pixels_chunk):
         x = pixel % width
         y = pixel // width
@@ -129,16 +101,15 @@ def write_pixels(image, pixels_chunk, width, do_encrypt=True):
         image.putpixel((x, y), new_pixels)
     image.save(f"{'encrypt' if do_encrypt else 'decrypt'}.png")
 
+
 def write_image(image, pixels, do_encrypt=True):
     """
     Write an image to a file
-    :param do_encrypt: Flag to identify if the image is to be encrypted or decrypted
     :param image: PIL Image object
+    :param pixels: Pixels to write to the image
+    :param do_encrypt: Flag to identify if the image is to be encrypted or decrypted
     :return: None
     """
-    width, height = image.size
-    from tqdm import tqdm
-
     # Divide the pixels into chunks
     thread_count = os.cpu_count() // 2
     pixels_list = list(pixels.items())
@@ -146,7 +117,7 @@ def write_image(image, pixels, do_encrypt=True):
 
     threads = []
     for chunk in chunks:
-        thread = threading.Thread(target=write_pixels, args=(image, dict(chunk), width, do_encrypt))
+        thread = threading.Thread(target=write_pixels, args=(image, dict(chunk), do_encrypt))
         threads.append(thread)
         thread.start()
 
@@ -203,6 +174,8 @@ def main():
         logging.info("On wrong password, the image will not be corrupted but image will not be correct")
         image = Image.open("encrypt.png")
         multi_threading(image, password, False)
+        logging.info("Writing image...")
+        write_image(image, pixel_values, False)
     else:
         logging.error("Invalid input")
 
