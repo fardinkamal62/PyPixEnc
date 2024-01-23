@@ -9,7 +9,7 @@ import os
 logging_format = "%(message)s"
 logging.basicConfig(format=logging_format, level=logging.INFO, datefmt="%H:%M:%S")
 NAME = "PixEnc"
-VERSION = "Beta 2.3.1"
+VERSION = "Beta 2.4.0"
 
 
 pixel_values = {}
@@ -156,7 +156,13 @@ def main():
         logging.error("Password cannot be empty")
         return
     if user_input == "e":
-        image = Image.open("image.png")
+        if os.path.isfile("image.jpg"):
+            image = Image.open("image.jpg").convert("RGBA")
+        elif os.path.isfile("image.png"):
+            image = Image.open("image.png")
+        else:
+            logging.error("No image found")
+            return
 
         logging.info("Encrypting image...")
         start_time = datetime.datetime.now()
