@@ -1,6 +1,6 @@
 <div align="center"><h1>PixEnc</h1></div>
 <div align="center">Encrypt image by manipulating pixels</div>
-<div align="center" style="color: grey"><sub>Version: Beta 2.0.0</sub></div>
+<div align="center" style="color: grey"><sub>Version: Beta 2.1.0</sub></div>
 <div align="center">
   <strong>
     <a href="https://fardinkamal62.vercel.app/projects/pixenc">Website</a>
@@ -9,11 +9,24 @@
     </strong>
 </div>
 
-# Beta Note
-Multithreaded feature in development.
+# Release Note
+## Beta 2.1.0 (Current)
+- Added multithreading support for encryption
+### Known Issue
+- Pixel encryption is working fine but problem is in creating image from encrypted pixels. It is the bottleneck.
+- Only PNG image support
 
-# Known Issue
-Threads creation & sharing workload is working fine but image generation & encryption is not proper. It's giving partial output. And giving error on pixel read-write on big image.
+## Beta 2.0.0
+- Added multithreading; but image generation is not proper
+### Known Issue
+- Threads creation & sharing workload is working fine but image generation & encryption is not proper. It's giving partial output. And giving error on pixel read-write on big image.
+- Only PNG image support
+
+## Stable 1.0.0
+- Can encrypt & decrypt PNG image
+### Known Issue
+- Single threaded
+- Only PNG image support
 
 # Technologies
 - Python
