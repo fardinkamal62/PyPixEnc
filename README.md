@@ -1,6 +1,6 @@
 <div align="center"><h1>PixEnc</h1></div>
 <div align="center">Encrypt image by manipulating pixels</div>
-<div align="center" style="color: grey"><sub>Version: Beta 2.3.0</sub></div>
+<div align="center" style="color: grey"><sub>Version: Beta 2.3.1</sub></div>
 <div align="center">
   <strong>
     <a href="https://fardinkamal62.vercel.app/projects/pixenc">Website</a>
@@ -10,7 +10,13 @@
 </div>
 
 # Release Note
-## Beta 2.3.0 (Current)
+## Beta 2.3.1 (Current)
+- Changes in logging
+
+### Known Issue
+- Only PNG image support
+
+## Beta 2.3.0
 - Added multithreading support for decryption
 
 ### Known Issue

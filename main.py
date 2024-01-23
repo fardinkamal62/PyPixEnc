@@ -9,7 +9,7 @@ import os
 logging_format = "%(message)s"
 logging.basicConfig(format=logging_format, level=logging.INFO, datefmt="%H:%M:%S")
 NAME = "PixEnc"
-VERSION = "Beta 2.3.0"
+VERSION = "Beta 2.3.1"
 
 
 pixel_values = {}
@@ -28,8 +28,6 @@ def encrypt(image, random_numbers, pixel_start, pixel_end):
     with file_lock:
         pixels = image.load()
 
-    logging.info("Encrypting image for pixels {pixel_start} to {pixel_end}...")
-    start_time = datetime.datetime.now()
     j = 0
     for i in tqdm(range(pixel_start, pixel_end)):
         j += 1
@@ -44,25 +42,20 @@ def encrypt(image, random_numbers, pixel_start, pixel_end):
             alpha = (alpha ^ random_numbers[j + 3] * 2)
             pixel_values[i] = (red, green, blue, alpha)
 
-    end_time = datetime.datetime.now()
-    logging.info(f"Encryption took {end_time - start_time} seconds for pixels {pixel_start} to {pixel_end}")
-
 
 def decrypt(image, random_numbers, pixel_start, pixel_end):
     """
     Encrypt an image using a password
+    :param image: PIL Image object
+    :param random_numbers: Random numbers to decrypt the image with
     :param pixel_start: Pixel to start at
     :param pixel_end: Pixel to end at
-    :param random_numbers:
-    :param image: PIL Image object
     :return: None
     """
     width, height = image.size
     with file_lock:
         pixels = image.load()
 
-    logging.info("Decrypting image for pixels {pixel_start} to {pixel_end}...")
-    start_time = datetime.datetime.now()
     j = 0
     for i in tqdm(range(pixel_start, pixel_end)):
         j += 1
@@ -76,9 +69,6 @@ def decrypt(image, random_numbers, pixel_start, pixel_end):
             blue = (blue ^ random_numbers[j + 2] * 2)
             alpha = (alpha ^ random_numbers[j + 3] * 2)
             pixel_values[i] = (red, green, blue, alpha)
-
-    end_time = datetime.datetime.now()
-    logging.info(f"Decryption took {end_time - start_time} seconds for pixels {pixel_start} to {pixel_end}")
 
 
 file_lock = threading.Lock()
@@ -128,10 +118,10 @@ def write_image(image, pixels, do_encrypt=True):
 
 def multi_threading(image, password, do_encrypt=True):
     """
-    Run multiple threads to encrypt the image
-    :param do_encrypt: Flag to identify if the image is to be encrypted or decrypted
+    Run multiple threads to encrypt & decrypt the image
     :param image: PIL Image object
     :param password: Password to encrypt the image with
+    :param do_encrypt: Flag to identify if the image is to be encrypted or decrypted
     :return: None
     """
     width, height = image.size
@@ -166,16 +156,34 @@ def main():
         logging.error("Password cannot be empty")
         return
     if user_input == "e":
-        image = Image.open("diu_logo.png")
+        image = Image.open("image.png")
+
+        logging.info("Encrypting image...")
+        start_time = datetime.datetime.now()
         multi_threading(image, password)
+        end_time = datetime.datetime.now()
+        logging.info(f"Encryption took {end_time - start_time} seconds")
+
         logging.info("Writing image...")
+        start_time = datetime.datetime.now()
         write_image(image, pixel_values, True)
+        end_time = datetime.datetime.now()
+        logging.info(f"Writing image took {end_time - start_time} seconds")
     elif user_input == "d":
         logging.info("On wrong password, the image will not be corrupted but image will not be correct")
         image = Image.open("encrypt.png")
+
+        logging.info("Decrypting image...")
+        start_time = datetime.datetime.now()
         multi_threading(image, password, False)
+        end_time = datetime.datetime.now()
+        logging.info(f"Decryption took {end_time - start_time} seconds")
+
         logging.info("Writing image...")
+        start_time = datetime.datetime.now()
         write_image(image, pixel_values, False)
+        end_time = datetime.datetime.now()
+        logging.info(f"Writing image took {end_time - start_time} seconds")
     else:
         logging.error("Invalid input")
 
