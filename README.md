@@ -1,6 +1,6 @@
 <div align="center"><h1>PixEnc</h1></div>
 <div align="center">Encrypt image by manipulating pixels</div>
-<div align="center" style="color: grey"><sub>Version: Beta 2.1.0</sub></div>
+<div align="center" style="color: grey"><sub>Version: Beta 2.2.0</sub></div>
 <div align="center">
   <strong>
     <a href="https://fardinkamal62.vercel.app/projects/pixenc">Website</a>
@@ -10,7 +10,14 @@
 </div>
 
 # Release Note
-## Beta 2.1.0 (Current)
+## Beta 2.2.0 (Current)
+- Added multithreading support for image generation resulting in faster encryption & image generation
+
+### Known Issue
+- Decryption is not operational
+- Only PNG image support
+
+## Beta 2.1.0
 - Added multithreading support for encryption
 ### Known Issue
 - Pixel encryption is working fine but problem is in creating image from encrypted pixels. It is the bottleneck.

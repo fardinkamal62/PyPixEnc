@@ -9,7 +9,7 @@ import os
 logging_format = "%(message)s"
 logging.basicConfig(format=logging_format, level=logging.INFO, datefmt="%H:%M:%S")
 NAME = "PixEnc"
-VERSION = "Beta 2.0.0"
+VERSION = "Beta 2.2.0"
 
 
 pixel_values = {}
@@ -112,6 +112,22 @@ def read_pixel(image, x, y):
     """
     return image.getpixel((x, y))
 
+def write_pixels(image, pixels_chunk, width, do_encrypt=True):
+    """
+    Write a chunk of pixels to an image
+    :param image: PIL Image object
+    :param pixels_chunk: A chunk of pixels
+    :param width: The width of the image
+    :param do_encrypt: Flag to identify if the image is to be encrypted or decrypted
+    :return: None
+    """
+    for pixel in tqdm(pixels_chunk):
+        x = pixel % width
+        y = pixel // width
+        red, green, blue, alpha = pixels_chunk[pixel]
+        new_pixels = (red, green, blue, alpha)
+        image.putpixel((x, y), new_pixels)
+    image.save(f"{'encrypt' if do_encrypt else 'decrypt'}.png")
 
 def write_image(image, pixels, do_encrypt=True):
     """
@@ -123,13 +139,20 @@ def write_image(image, pixels, do_encrypt=True):
     width, height = image.size
     from tqdm import tqdm
 
-    for pixel in tqdm(pixels):
-        x = pixel % width
-        y = pixel // width
-        red, green, blue, alpha = pixels[pixel]
-        new_pixels = (red, green, blue, alpha)
-        image.putpixel((x, y), new_pixels)
-        image.save(f"{'encrypt' if do_encrypt else 'decrypt'}.png")
+    # Divide the pixels into chunks
+    thread_count = os.cpu_count() // 2
+    pixels_list = list(pixels.items())
+    chunks = [pixels_list[i::thread_count] for i in range(thread_count)]
+
+    threads = []
+    for chunk in chunks:
+        thread = threading.Thread(target=write_pixels, args=(image, dict(chunk), width, do_encrypt))
+        threads.append(thread)
+        thread.start()
+
+    # Wait for all threads to finish
+    for thread in threads:
+        thread.join()
 
 
 def multi_threading(image, password, do_encrypt=True):
