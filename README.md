@@ -1,6 +1,6 @@
 <div align="center"><h1>PixEnc</h1></div>
 <div align="center">Encrypt image by manipulating pixels</div>
-<div align="center" style="color: grey"><sub>Version: 2.4.0</sub></div>
+<div align="center" style="color: grey"><sub>Version: 3.0.1</sub></div>
 <div align="center">
   <strong>
     <a href="https://fardinkamal62.vercel.app/projects/pixenc">Website</a>
@@ -51,7 +51,11 @@
 
 
 # Release Note
-### 2.4.0 (Current)
+### 3.0.1 (Current)
+- Converted codebase to OOP, separating encryption-decryption logic, image generation logic & entry point
+- Fixed issue with Palette mode PNG & Grayscale mode PNG
+
+### 2.4.0
 - Added support for JPG image
 
 #### Known Issue
