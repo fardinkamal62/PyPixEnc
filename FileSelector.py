@@ -43,7 +43,7 @@ class FileSelector:
         """
         while True:
             last_dir = self.pwd.split("\\")[-1]
-            answer = prompt(f"{last_dir}: ", completer=self.path)
+            answer = prompt(f"Now at {last_dir}/: ", completer=self.path)
 
             if answer == ".." or os.path.isdir(answer):
                 self.pwd = os.path.abspath(os.path.join(self.pwd, answer))
