@@ -1,10 +1,9 @@
 from PIL import Image
 from FileSelector import FileSelector
+from operation import Operation
 import datetime
 import logging
-import os
 
-from operation import Operation
 
 logging_format = "%(message)s"
 logging.basicConfig(format=logging_format, level=logging.INFO)
@@ -20,8 +19,12 @@ def main():
         return
     if user_input == "e":
         logging.info("Chose image file:\n")
-        file_selector = FileSelector()
-        file_path = file_selector.select_file()
+        try:
+            file_selector = FileSelector()
+            file_path = file_selector.select_file()
+        except KeyboardInterrupt:
+            logging.info("Exiting...")
+            return
         # All errors are handled inside the select_file method
         image = Image.open(file_path).convert("RGBA")
 
