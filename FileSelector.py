@@ -10,16 +10,16 @@ class FileSelector:
 
     Attributes:
         pwd (str): The current working directory.
-        path (list): A list of files and directories in the current working directory.
         extension (str): The file extension of the selected file.
         extension_list (list): A list of supported image file extensions.
     """
 
     pwd = os.getcwd()
-    path = os.listdir(pwd)
-    path = WordCompleter(path)
 
     def __init__(self):
+        """
+        Initialize the class attributes.
+        """
         self.extension = ""
         self.extension_list = [
             "jpg",
@@ -34,6 +34,20 @@ class FileSelector:
             "hevc",
         ]
 
+    def filter(self):
+        """
+        Filter the list of files in the current directory based on the supported image file extensions.
+
+        Returns:
+            list: A list of files that match the supported image file extensions.
+        """
+        image_file_list = list()
+        for filename in os.listdir(self.pwd):
+            if filename.split(".")[-1] in self.extension_list or os.path.isdir(filename):
+                # Checking for image and directory
+                image_file_list.append(filename)
+        return image_file_list
+
     def select_file(self):
         """
         Prompts the user to select a file from the local file system.
@@ -41,14 +55,19 @@ class FileSelector:
         Returns:
             str: The absolute path of the selected file.
         """
+        paths = WordCompleter(self.filter())
         while True:
             last_dir = self.pwd.split("\\")[-1]
-            answer = prompt(f"Now at {last_dir}/: ", completer=self.path)
+            try:
+                answer = prompt(f"Now at {last_dir}/: ", completer=paths)
+            except KeyboardInterrupt:
+                logging.info("Exit")  # Graceful exit
+                exit(1)
 
             if answer == ".." or os.path.isdir(answer):
                 self.pwd = os.path.abspath(os.path.join(self.pwd, answer))
                 os.chdir(self.pwd)
-                self.path = WordCompleter(os.listdir(self.pwd))
+                paths = WordCompleter(self.filter())
             elif os.path.isfile(answer):
                 break
 
