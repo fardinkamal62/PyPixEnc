@@ -42,10 +42,14 @@ class FileSelector:
             list: A list of files that match the supported image file extensions.
         """
         image_file_list = list()
+        directories = list()
+        files = list()
         for filename in os.listdir(self.pwd):
-            if filename.split(".")[-1] in self.extension_list or os.path.isdir(filename):
-                # Checking for image and directory
-                image_file_list.append(filename)
+            if filename.split(".")[-1] in self.extension_list:
+                files.append(filename)
+            elif os.path.isdir(filename):
+                directories.append(filename)
+        image_file_list = directories + files
         image_file_list.insert(0, "..")
         return image_file_list
 
