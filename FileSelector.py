@@ -47,14 +47,15 @@ class FileSelector:
 
             if answer == ".." or os.path.isdir(answer):
                 self.pwd = os.path.abspath(os.path.join(self.pwd, answer))
+                os.chdir(self.pwd)
                 self.path = WordCompleter(os.listdir(self.pwd))
-            else:
+            elif os.path.isfile(answer):
                 break
 
         self.extension = answer.split(".")[-1]
 
         if self.extension not in self.extension_list:
             logging.error("Not an image.")
-            return
+            exit(1)
         else:
             return os.path.abspath(answer)
