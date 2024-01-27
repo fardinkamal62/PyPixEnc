@@ -14,17 +14,13 @@ VERSION = "3.0.1"
 def main():
     user_input = input("Encrypt or decrypt? (e/d): ")
     password = input("Password: ")
+    file_selector = FileSelector()
     if len(password) < 1:
         logging.error("Password cannot be empty")
         return
     if user_input == "e":
         logging.info("Chose image file:\n")
-        try:
-            file_selector = FileSelector()
-            file_path = file_selector.select_file()
-        except KeyboardInterrupt:
-            logging.info("Exiting...")
-            return
+        file_path = file_selector.select_file()
         # All errors are handled inside the select_file method
         image = Image.open(file_path).convert("RGBA")
 
@@ -36,7 +32,9 @@ def main():
 
     elif user_input == "d":
         logging.info("On wrong password, the image will not be corrupted but image will not be correct")
-        image = Image.open("encrypt.png")
+        logging.info("Chose image file:\n")
+        file_path = file_selector.select_file()
+        image = Image.open(file_path).convert("RGBA")
 
         logging.info("Decrypting image...")
         start_time = datetime.datetime.now()
