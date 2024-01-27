@@ -46,6 +46,7 @@ class FileSelector:
             if filename.split(".")[-1] in self.extension_list or os.path.isdir(filename):
                 # Checking for image and directory
                 image_file_list.append(filename)
+        image_file_list.insert(0, "..")
         return image_file_list
 
     def select_file(self):
@@ -56,10 +57,14 @@ class FileSelector:
             str: The absolute path of the selected file.
         """
         paths = WordCompleter(self.filter())
+        virgin = True
         while True:
             last_dir = self.pwd.split("\\")[-1]
             try:
-                answer = prompt(f"Now at {last_dir}/: ", completer=paths)
+                if virgin:
+                    print(file for file in os.listdir(self.pwd))
+                    virgin = False
+                answer = prompt(f"Now at {last_dir}/ (Press Tab): ", completer=paths)
             except KeyboardInterrupt:
                 logging.info("Exit")  # Graceful exit
                 exit(1)
