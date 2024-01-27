@@ -58,4 +58,5 @@ class FileSelector:
             logging.error("Not an image.")
             exit(1)
         else:
+            logging.info(f"Selected file: {answer}")
             return os.path.abspath(answer)
