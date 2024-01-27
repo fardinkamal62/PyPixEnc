@@ -59,7 +59,7 @@ class Operation:
 
             thread = threading.Thread(target=self.__encrypt_decrypt, args=(image, arr, pixel_start, pixel_end))
             threads.append(thread)
-            logging.info(f"Thread {_} started for pixels {pixel_start} to {pixel_end}")
+            logging.info(f"Thread {_+1} started for pixels {pixel_start} to {pixel_end}")
             thread.start()
         for thread in threads:
             thread.join()
