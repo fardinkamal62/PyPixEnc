@@ -1,4 +1,5 @@
 from PIL import Image
+from FileSelector import FileSelector
 import datetime
 import logging
 import os
@@ -18,13 +19,11 @@ def main():
         logging.error("Password cannot be empty")
         return
     if user_input == "e":
-        if os.path.isfile("image.jpg"):
-            image = Image.open("image.jpg").convert("RGBA")
-        elif os.path.isfile("image.png"):
-            image = Image.open("image.png").convert("RGBA")
-        else:
-            logging.error("No image found")
-            return
+        logging.info("Chose image file:\n")
+        file_selector = FileSelector()
+        file_path = file_selector.select_file()
+        # All errors are handled inside the select_file method
+        image = Image.open(file_path).convert("RGBA")
 
         logging.info("Encrypting image...")
         start_time = datetime.datetime.now()
