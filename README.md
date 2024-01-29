@@ -51,7 +51,11 @@
 
 
 # Release Note
-### 2.4.0 (Current)
+### 3.0.1 (Current)
+- Converted codebase to OOP, separating encryption-decryption logic, image generation logic & entry point
+- Fixed issue with Palette mode PNG & Grayscale mode PNG
+
+### 2.4.0
 - Added support for JPG image
 
 #### Known Issue
