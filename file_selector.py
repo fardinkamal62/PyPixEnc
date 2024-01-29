@@ -3,6 +3,8 @@ from prompt_toolkit.completion import WordCompleter
 import os
 import logging
 
+# TODO: Start file selector at the directory of the script
+
 
 class FileSelector:
     """
@@ -41,7 +43,6 @@ class FileSelector:
         Returns:
             list: A list of files that match the supported image file extensions.
         """
-        image_file_list = list()
         directories = list()
         files = list()
         for filename in os.listdir(self.pwd):
@@ -60,13 +61,12 @@ class FileSelector:
         Returns:
             str: The absolute path of the selected file.
         """
-        paths = WordCompleter(self.filter())
+        paths = WordCompleter(self.filter(), True)
         virgin = True
         while True:
             last_dir = self.pwd.split("\\")[-1]
             try:
                 if virgin:
-                    print(file for file in os.listdir(self.pwd))
                     virgin = False
                 answer = prompt(f"Now at {last_dir}/ (Press Tab): ", completer=paths)
             except KeyboardInterrupt:
@@ -76,7 +76,7 @@ class FileSelector:
             if answer == ".." or os.path.isdir(answer):
                 self.pwd = os.path.abspath(os.path.join(self.pwd, answer))
                 os.chdir(self.pwd)
-                paths = WordCompleter(self.filter())
+                paths = WordCompleter(self.filter(), True)
             elif os.path.isfile(answer):
                 break
 

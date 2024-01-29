@@ -1,6 +1,6 @@
 <div align="center"><h1>PixEnc</h1></div>
 <div align="center">Encrypt image by manipulating pixels</div>
-<div align="center" style="color: grey"><sub>Version: 3.0.1</sub></div>
+<div align="center" style="color: grey"><sub>Version: 3.1.1</sub></div>
 <div align="center">
   <strong>
     <a href="https://fardinkamal62.vercel.app/projects/pixenc">Website</a>
@@ -33,25 +33,34 @@
 # Installation
 1. Clone the repository
 2. Install Python 3.8 or above
-3. Install required packages from requirements.txt
-4. Run main.py
+3. Install required packages from `requirements.txt`
+4. Run `main.py`
 
 # Usage
 ### Encrypting Image
-1. Keep the image you want to encrypt in the same directory as main.py
-2. Change the name of the image to `image.png` or `image.jpg`
-3. Run main.py
+1. Keep the image you want to encrypt in the same directory as `main.py`
+2. Run main.py
+3. Select the image you want to encrypt
 4. Enter the password you want to use to encrypt the image
 5. It will generate a file named `encrypt.png`
 
 ### Decrypting Image
-1. To decrypt the image, run main.py again
+1. To decrypt the image, run `main.py` again
 2. Enter the password you used to encrypt the image
-3. It will generate a file named `decrypt.png`
+3. Select the image you want to decrypt
+4. It will generate a file named `decrypt.png`
 
 
 # Release Note
-### 3.0.1 (Current)
+### 3.1.1 (Current)
+- Renamed FileSelector.py to file_selector.py
+- Changed user flow from selection -> password -> file selection to selection -> file selection -> password
+- Made file explorer case-insensitive
+
+### 3.1.0
+- Added file explorer to select image
+
+### 3.0.1
 - Converted codebase to OOP, separating encryption-decryption logic, image generation logic & entry point
 - Fixed issue with Palette mode PNG & Grayscale mode PNG
 

@@ -1,5 +1,5 @@
 from PIL import Image
-from FileSelector import FileSelector
+from file_selector import FileSelector
 from operation import Operation
 import datetime
 import logging
@@ -8,21 +8,23 @@ import logging
 logging_format = "%(message)s"
 logging.basicConfig(format=logging_format, level=logging.INFO)
 NAME = "PixEnc"
-VERSION = "3.0.1"
+VERSION = "3.1.1"
 
 
 def main():
+    print(f"{NAME} v{VERSION}\n")
     user_input = input("Encrypt or decrypt? (e/d): ")
-    password = input("Password: ")
     file_selector = FileSelector()
-    if len(password) < 1:
-        logging.error("Password cannot be empty")
-        return
     if user_input == "e":
         logging.info("Chose image file:\n")
         file_path = file_selector.select_file()
         # All errors are handled inside the select_file method
         image = Image.open(file_path).convert("RGBA")
+
+        password = input("Password: ")
+        if len(password) < 1:
+            logging.error("Password cannot be empty")
+            return
 
         logging.info("Encrypting image...")
         start_time = datetime.datetime.now()
@@ -35,6 +37,11 @@ def main():
         logging.info("Chose image file:\n")
         file_path = file_selector.select_file()
         image = Image.open(file_path).convert("RGBA")
+
+        password = input("Password: ")
+        if len(password) < 1:
+            logging.error("Password cannot be empty")
+            return
 
         logging.info("Decrypting image...")
         start_time = datetime.datetime.now()
