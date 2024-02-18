@@ -1,4 +1,5 @@
 <div align="center"><h1>PixEnc</h1></div>
+<div align="center"><a href="https://github.com/fardinkamal62/PixEnc">PixEnc</a> in Python</div>
 <div align="center">Encrypt image by manipulating pixels</div>
 <div align="center" style="color: grey"><sub>Version: 3.1.1</sub></div>
 <div align="center">
